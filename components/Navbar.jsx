@@ -14,6 +14,10 @@ const tabs = [
   { id: "contact", label: "contact.jsx" },
 ];
 
+// Match this to the framer-motion transition duration below (0.25s),
+// with a little buffer so we measure scroll position after layout settles.
+const MENU_COLLAPSE_MS = 280;
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("home");
@@ -47,13 +51,23 @@ export default function Navbar() {
     return () => observer.disconnect();
   }, []);
 
-  // Scroll to the section FIRST (while the dropdown DOM is still in its
-  // current state), then close the mobile menu on the next tick. This
-  // avoids the scroll target position shifting under the user because
-  // the dropdown collapsed mid-calculation.
-  const handleNav = (id) => {
+  const scrollToId = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    setTimeout(() => setOpen(false), 300);
+  };
+
+  const handleNav = (id) => {
+    if (open) {
+      // Mobile menu is open: close it first, then wait for the
+      // collapse animation to finish before measuring scroll position.
+      // Scrolling immediately uses a layout that's still animating,
+      // so the target position goes stale mid-scroll.
+      setOpen(false);
+      window.setTimeout(() => scrollToId(id), MENU_COLLAPSE_MS);
+    } else {
+      // Desktop (or mobile menu already closed): layout is stable,
+      // scroll immediately.
+      scrollToId(id);
+    }
   };
 
   return (
@@ -64,10 +78,10 @@ export default function Navbar() {
           : "border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-content items-center justify-between gap-3 px-5 py-3 sm:px-8">
+      <div className="mx-auto flex max-w-content items-center justify-between px-5 py-3 sm:px-8">
         <button
           onClick={() => handleNav("home")}
-          className="min-w-0 truncate font-display text-sm font-semibold tracking-tight"
+          className="font-display text-sm font-semibold tracking-tight"
         >
           <span className="text-gradient">~/</span>vishal-pandey
         </button>
@@ -95,10 +109,10 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-3">
           <ThemeToggle />
           <button
-            className="shrink-0 md:hidden"
+            className="md:hidden"
             aria-label="Toggle menu"
             onClick={() => setOpen((v) => !v)}
           >

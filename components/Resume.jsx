@@ -23,7 +23,7 @@ export default function Resume() {
               <FileText size={22} />
             </div>
             <div>
-              <p className="font-medium">Vishal_Kumar_Pandey_Resume.pdf</p>
+              <p className="font-medium">Vishal_Pandey_Resume.pdf</p>
              
             </div>
           </div>
