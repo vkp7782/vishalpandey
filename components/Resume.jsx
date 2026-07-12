@@ -51,9 +51,6 @@ export default function Resume() {
         </div>
       </Reveal>
 
-      <p className="mt-3 font-mono text-xs text-muted dark:text-muted-dark">
-        Place your PDF at /public/resume.pdf — both buttons above point to that file.
-      </p>
     </section>
   );
 }
