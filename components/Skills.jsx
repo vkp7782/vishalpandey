@@ -20,6 +20,25 @@ const accentCycle = [
   "text-amber dark:text-amber-dark",
 ];
 
+const chipContainer = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.045,
+    },
+  },
+};
+
+const chipItem = {
+  hidden: { opacity: 0, scale: 0.9, y: 4 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 export default function Skills() {
   const groups = Object.entries(skills);
 
@@ -29,7 +48,14 @@ export default function Skills() {
         <Reveal>
           <p className="section-label mb-3">02 — skills.jsx</p>
           <h2 className="mb-8 text-2xl font-semibold sm:text-3xl">
-            Skills &amp; <span className="text-gradient">tools</span>
+            Skills &amp;{" "}
+            <motion.span
+              className="text-gradient inline-block"
+              animate={{ scale: [1, 1.025, 1] }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              tools
+            </motion.span>
           </h2>
         </Reveal>
 
@@ -39,28 +65,48 @@ export default function Skills() {
             const accent = accentCycle[gi % accentCycle.length];
             return (
               <Reveal key={group} delay={0.05 * gi}>
-                <div className="gradient-border card h-full p-5 transition-transform hover:-translate-y-1">
-                  <div className="mb-3 flex items-center gap-2">
-                    <Icon size={16} className={accent} />
+                <motion.div
+                  whileHover={{ y: -4, scale: 1.01 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 24, mass: 0.6 }}
+                  className="gradient-border card h-full p-5"
+                >
+                  <motion.div
+                    className="mb-3 flex items-center gap-2"
+                    initial={{ opacity: 0, x: -6 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <motion.span
+                      whileHover={{ rotate: -8, scale: 1.15 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                    >
+                      <Icon size={16} className={accent} />
+                    </motion.span>
                     <p className="font-mono text-xs font-medium text-ink dark:text-ink-dark">
                       {group}
                     </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {items.map((skill, i) => (
+                  </motion.div>
+                  <motion.div
+                    variants={chipContainer}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, margin: "-40px" }}
+                    className="flex flex-wrap gap-2"
+                  >
+                    {items.map((skill) => (
                       <motion.span
                         key={skill}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.03 * i, duration: 0.3 }}
+                        variants={chipItem}
+                        whileHover={{ y: -2, scale: 1.06 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 18 }}
                         className="tag-chip rounded-md border border-line dark:border-line-dark bg-paper dark:bg-paper-dark px-2.5 py-1 text-xs text-ink dark:text-ink-dark"
                       >
                         {skill}
                       </motion.span>
                     ))}
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
               </Reveal>
             );
           })}
