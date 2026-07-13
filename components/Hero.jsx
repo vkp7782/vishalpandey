@@ -44,7 +44,6 @@ export default function Hero() {
         <h1 className="mb-1 text-3xl font-semibold leading-tight sm:text-4xl">
           Hi, I'm <span className="text-gradient">{profile.name.split(" ")[0]}</span>
         </h1>
-        <p className="section-label">home.jsx</p>
       </motion.div>
 
       {/* ---- Card + Photo row — only these two, so they align perfectly ---- */}
